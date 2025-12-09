@@ -528,7 +528,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plant_5
+      name: topDown_baseTiles_19
       rect:
         serializedVersion: 2
         x: 96
@@ -726,7 +726,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plant_6
+      name: Plant_5
       rect:
         serializedVersion: 2
         x: 80
@@ -748,7 +748,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plant_7
+      name: Plant_6
       rect:
         serializedVersion: 2
         x: 96
@@ -770,7 +770,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Plant_8
+      name: Plant_7
       rect:
         serializedVersion: 2
         x: 112
@@ -3828,7 +3828,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Island_top
+      name: Island_bottom
       rect:
         serializedVersion: 2
         x: 112
@@ -5258,7 +5258,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Island_bottom
+      name: Island_top
       rect:
         serializedVersion: 2
         x: 112
@@ -13606,18 +13606,17 @@ TextureImporter:
       Island_Inner_Top_Right: 741876347
       Island_Top_Left: 1188320837
       Island_Top_Right: -283269576
-      Island_bottom: -1325742404
+      Island_bottom: -127972741
       Island_left: -2126541637
       Island_right: 1294783434
-      Island_top: -127972741
+      Island_top: -1325742404
       Plant_1: 1253413523
       Plant_2: 1571197680
       Plant_3: 408305607
       Plant_4: -1462977963
-      Plant_5: -1989028533
-      Plant_6: -1678836593
-      Plant_7: 1122391419
-      Plant_8: 1231849929
+      Plant_5: -1678836593
+      Plant_6: 1122391419
+      Plant_7: 1231849929
       topDown_baseTiles_0: 1250465432
       topDown_baseTiles_1: 714804830
       topDown_baseTiles_10: -215215701
@@ -13713,6 +13712,7 @@ TextureImporter:
       topDown_baseTiles_187: -1113448951
       topDown_baseTiles_188: 296796301
       topDown_baseTiles_189: -1869884404
+      topDown_baseTiles_19: -1989028533
       topDown_baseTiles_190: 899930336
       topDown_baseTiles_191: -2043413185
       topDown_baseTiles_192: 1165675037
