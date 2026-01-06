@@ -5,7 +5,10 @@ public class Player : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
-
+    [Header("XP System")]
+    public XPBar xpBar;
+    public int currentXP = 0;
+    public int nextLevelXP = 100;
     public HealthBar healthBar;
     public SpriteRenderer spriteRenderer;
     public float flashDuration = 0.2f;
@@ -24,6 +27,7 @@ public class Player : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        if (xpBar != null) xpBar.SetMaxXP(nextLevelXP);
     }
 
     private void Update()
@@ -56,6 +60,35 @@ public class Player : MonoBehaviour
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(flashDuration);
         spriteRenderer.color = Color.white;
+    }
+    public void GainExperience(int amount)
+    {
+        currentXP += amount;
+
+        // 3. Update de visuele balk
+        if (xpBar != null) xpBar.SetXP(currentXP);
+
+        if (currentXP >= nextLevelXP)
+        {
+            LevelUp();
+        }
+    }
+
+    void LevelUp()
+    {
+        // Bereken hoeveel XP we 'over' hebben voor het volgende level
+        int leftoverXP = currentXP - nextLevelXP;
+
+        currentXP = (leftoverXP > 0) ? leftoverXP : 0;
+        nextLevelXP = Mathf.RoundToInt(nextLevelXP * 1.5f);
+
+        if (xpBar != null)
+        {
+            xpBar.SetMaxXP(nextLevelXP);
+            xpBar.SetXP(currentXP); // Zet hem op de overgebleven XP ipv 0
+        }
+
+        Debug.Log("LEVEL UP! Nieuw doel: " + nextLevelXP);
     }
 
     void Die()

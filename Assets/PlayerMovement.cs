@@ -1,16 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-
     private Rigidbody2D rb;
     private Animator animator;
     private Vector2 moveInput;
-    private Vector2 lastMoveInput; // Keeps the last non-zero direction
+    private Vector2 lastMoveInput;
+    private float knockbackTimer;
 
     void Awake()
     {
@@ -20,13 +18,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Update animator parameters every frame
+        if (knockbackTimer > 0) knockbackTimer -= Time.deltaTime;
+
+        // Update animator parameters
         animator.SetFloat("InputX", moveInput.x);
         animator.SetFloat("InputY", moveInput.y);
-        animator.SetBool("isWalking", moveInput != Vector2.zero);
+        animator.SetBool("isWalking", moveInput.sqrMagnitude > 0);
 
-        // Update last non-zero direction for idle animation
-        if (moveInput != Vector2.zero)
+        // Update last direction voor idle animations
+        if (moveInput.sqrMagnitude > 0)
         {
             lastMoveInput = moveInput;
             animator.SetFloat("LastInputX", lastMoveInput.x);
@@ -36,11 +36,16 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Apply movement in FixedUpdate for smoother physics
-        rb.linearVelocity = moveInput * moveSpeed;
+        if (knockbackTimer <= 0)
+        {
+            // Gebruik velocity in plaats van linearVelocity als je een oudere Unity versie hebt, 
+            // of blijf bij linearVelocity in Unity 6, maar zorg dat we de waarde direct zetten:
+            rb.linearVelocity = moveInput * moveSpeed;
+        }
     }
 
-    // Called by the Input System
+    public void ApplyKnockback() => knockbackTimer = 0.25f;
+
     public void Move(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
