@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbf62ea1dfa5de34a8c32f87f02bbccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  moveSpeed: 2
+  moveSpeed: 5
   damage: 10
   damageCooldown: 1
   gemPrefab: {fileID: 7857514357725351879, guid: c26a42e3cd9c35e4b93e3e941aa00e8e, type: 3}

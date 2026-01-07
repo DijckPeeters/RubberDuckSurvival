@@ -56,7 +56,10 @@ public class ScoreManager : MonoBehaviour
     // Hang deze functie aan een 'Restart' knop op je GameOver scherm
     public void RestartGame()
     {
+        // HEEL BELANGRIJK: Zet de tijd weer op 1, anders blijft de game gepauzeerd!
         Time.timeScale = 1f;
+
+        // Herlaadt de huidige scene
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 }
