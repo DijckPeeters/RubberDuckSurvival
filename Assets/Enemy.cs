@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections; // Nodig voor Coroutines
 
 public class Enemy : MonoBehaviour
 {
@@ -6,22 +7,47 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 5f;
     public float damage = 10f;
     public float damageCooldown = 1f;
+    public float baseHealth = 20f;
     public GameObject gemPrefab;
+
+    [Header("Visual Effects")]
+    public Color flashColor = Color.red; // De kleur van de flash
+    public float flashDuration = 0.1f;    // Hoe lang de flash duurt
+
+    private float currentHealth;
     private float lastDamageTime = 0f;
     private Rigidbody2D rb;
     private Transform target;
     private EnemyPooler originPool;
+
+    // Nieuwe variabelen voor de flash
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
+    private Coroutine flashCoroutine;
 
     public void SetPool(EnemyPooler pool) => originPool = pool;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.freezeRotation = true; // Voorkomt tollen
+        rb.freezeRotation = true;
+
+        // Pak de SpriteRenderer op het moment dat de enemy wordt aangemaakt
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        // Reset de kleur voor het geval de enemy uit de pool komt terwijl hij nog rood was
+        if (spriteRenderer != null) spriteRenderer.color = originalColor;
+
+        float timeInMinutes = Time.timeSinceLevelLoad / 60f;
+        currentHealth = baseHealth * (1f + (timeInMinutes * 0.2f));
+
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) target = playerObj.transform;
     }
@@ -31,8 +57,29 @@ public class Enemy : MonoBehaviour
         if (target != null)
         {
             Vector2 direction = ((Vector2)target.position - rb.position).normalized;
-            Vector2 newPos = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(newPos);
+            rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    public void TakeDamage(float amount)
+    {
+        currentHealth -= amount;
+
+        // Start de flash effect
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+        flashCoroutine = StartCoroutine(HitFlash());
+
+        if (currentHealth <= 0) Die();
+    }
+
+    // De Coroutine die de kleur verandert
+    IEnumerator HitFlash()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = flashColor;
+            yield return new WaitForSeconds(flashDuration);
+            spriteRenderer.color = originalColor;
         }
     }
 
@@ -55,24 +102,9 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        // 1. Altijd eerst de orb spawnen op de huidige positie
-        if (gemPrefab != null)
-        {
-            Instantiate(gemPrefab, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            Debug.LogWarning("Geen gemPrefab gevonden op " + gameObject.name);
-        }
+        if (gemPrefab != null) Instantiate(gemPrefab, transform.position, Quaternion.identity);
 
-        // 2. Daarna de vijand wegsturen of vernietigen
-        if (originPool != null)
-        {
-            originPool.ReleaseEnemy(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (originPool != null) originPool.ReleaseEnemy(gameObject);
+        else Destroy(gameObject);
     }
 }

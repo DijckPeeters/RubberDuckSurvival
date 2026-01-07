@@ -6,7 +6,7 @@ public class UpgradeManager : MonoBehaviour
     public Player player;
 
     [Header("Weapon Settings")]
-    public GameObject weaponObject; // Hier sleep je morgen je wapen in!
+    public GameObject weaponObject; // Sleep hier je 'WeaponHolder' of 'Sword' in
 
     public void OpenMenu()
     {
@@ -24,23 +24,22 @@ public class UpgradeManager : MonoBehaviour
 
     public void UpgradeDamage()
     {
+        // Als je een wapen script hebt, kun je hier damage++ doen
         Debug.Log("Damage Upgraded!");
         CloseMenu();
     }
 
     public void UpgradeSize()
     {
-        // We zoeken het script op het wapen-object dat je hebt gesleept
-        // Verander 'SwordWeapon' naar de exacte naam van jouw wapen-script!
-        var weaponScript = weaponObject.GetComponent<SwordWeapon>();
-
-        if (weaponScript != null)
+        if (weaponObject != null)
         {
-            // We maken het wapen groter via de variabele in jouw script
-            // Ik gok dat de variabele 'weaponSize' of 'scale' heet
-            weaponObject.transform.localScale *= 1.3f;
-
-            Debug.Log("Wapen script succesvol aangepast!");
+            // Dit vergroot het HELE object (Sprite + Hitbox + Animatie)
+            weaponObject.transform.localScale *= 1.25f;
+            Debug.Log("Wapen en Hitbox zijn nu groter!");
+        }
+        else
+        {
+            Debug.LogWarning("Geen weaponObject toegewezen in de UpgradeManager!");
         }
 
         CloseMenu();

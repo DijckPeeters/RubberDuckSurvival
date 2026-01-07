@@ -1,62 +1,90 @@
 using UnityEngine;
+using System.Collections.Generic; // Nodig voor de lijst
 
 public class SwordWeapon : MonoBehaviour
 {
+    [Header("Objects")]
+    public GameObject rightAttackObject;
+    public GameObject leftAttackObject;
+
     [Header("Settings")]
     public float damage = 20f;
-    public float attackSpeed = 1.5f; // Seconden tussen attacks
-    public float range = 3f;
-    public Vector2 slashSize = new Vector2(2f, 1f);
-
-    [Header("Visuals")]
-    public GameObject slashPrefab; // Een simpel wit streepje of sprite
+    public float attackSpeed = 1.5f;
+    public float hitboxDuration = 0.5f;
+    public Vector2 hitboxSize = new Vector2(3f, 1f);
 
     private float timer;
-    private bool slashRight = true;
+    private bool strikeRight = true;
+    private bool isHitboxActive = false;
+    private float activeTimer;
+    private List<Enemy> enemiesHitThisAttack = new List<Enemy>();
 
     void Update()
     {
         timer += Time.deltaTime;
-
         if (timer >= attackSpeed)
         {
             Attack();
             timer = 0;
         }
+
+        // Blijf checken zolang de hitbox aan staat
+        if (isHitboxActive)
+        {
+            CheckHitContinuous();
+            activeTimer -= Time.deltaTime;
+            if (activeTimer <= 0)
+            {
+                isHitboxActive = false;
+                DisableAttacks();
+            }
+        }
     }
 
     void Attack()
     {
-        float side = slashRight ? 1f : -1f;
-        Vector2 spawnPos = (Vector2)transform.position + new Vector2(side * 1.5f, 0);
+        enemiesHitThisAttack.Clear(); // Reset de lijst voor de nieuwe klap
+        GameObject currentAttack = strikeRight ? rightAttackObject : leftAttackObject;
 
-        // --- VISUEEL EFFECT ---
-        if (slashPrefab != null)
-        {
-            // Spawn de witte streep
-            GameObject slash = Instantiate(slashPrefab, spawnPos, Quaternion.identity);
-            // Verwijder de streep automatisch na 0.1 seconde (flits)
-            Destroy(slash, 0.1f);
-        }
+        currentAttack.SetActive(true);
+        Animator anim = currentAttack.GetComponent<Animator>();
+        if (anim != null) anim.Play("Slash_Anim", -1, 0f);
 
-        // --- DAMAGE LOGICA ---
-        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(spawnPos, slashSize, 0);
-        foreach (Collider2D enemyCollider in hitEnemies)
+        isHitboxActive = true;
+        activeTimer = hitboxDuration;
+        strikeRight = !strikeRight;
+    }
+
+    void CheckHitContinuous()
+    {
+        // Bepaal welke kant we nu checken
+        Vector3 pos = !strikeRight ? rightAttackObject.transform.position : leftAttackObject.transform.position;
+
+        Collider2D[] hits = Physics2D.OverlapBoxAll(pos, hitboxSize, 0);
+        foreach (Collider2D hit in hits)
         {
-            Enemy enemyScript = enemyCollider.GetComponentInParent<Enemy>();
-            if (enemyScript != null)
+            Enemy enemyScript = hit.GetComponent<Enemy>();
+            if (enemyScript == null) enemyScript = hit.GetComponentInParent<Enemy>();
+
+            // Alleen hitten als het een Enemy is EN we hem deze klap nog niet geraakt hebben
+            if (enemyScript != null && !enemiesHitThisAttack.Contains(enemyScript))
             {
-                enemyScript.Die();
+                enemyScript.TakeDamage(damage);
+                enemiesHitThisAttack.Add(enemyScript); // Voeg toe aan lijst zodat hij niet dubbel geraakt wordt
             }
         }
-
-        slashRight = !slashRight;
     }
-    // Teken de range in de editor zodat je het kunt zien
-    private void OnDrawGizmosSelected()
+
+    void DisableAttacks()
     {
-        Gizmos.color = Color.red;
-        float side = slashRight ? 1f : -1f;
-        Gizmos.DrawWireCube((Vector2)transform.position + new Vector2(side * 1.5f, 0), slashSize);
+        rightAttackObject.SetActive(false);
+        leftAttackObject.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = isHitboxActive ? Color.green : Color.red;
+        if (rightAttackObject) Gizmos.DrawWireCube(rightAttackObject.transform.position, hitboxSize);
+        if (leftAttackObject) Gizmos.DrawWireCube(leftAttackObject.transform.position, hitboxSize);
     }
 }
