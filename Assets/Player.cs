@@ -5,14 +5,18 @@ public class Player : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
+
     [Header("XP System")]
     public XPBar xpBar;
     public int currentXP = 0;
     public int nextLevelXP = 100;
+    public UpgradeManager upgradeManager;
+
+    [Header("Components")]
     public HealthBar healthBar;
     public SpriteRenderer spriteRenderer;
     public float flashDuration = 0.2f;
-    public float knockbackForce = 20f; // verhoogd voor duidelijke knockback
+    public float knockbackForce = 20f;
 
     private Rigidbody2D rb;
 
@@ -26,46 +30,13 @@ public class Player : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        if (healthBar != null) healthBar.SetMaxHealth(maxHealth);
         if (xpBar != null) xpBar.SetMaxXP(nextLevelXP);
     }
 
-    private void Update()
-    {
-        // Test: spatie om zelf damage te nemen
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TakeDamage(10, Vector2.right);
-        }
-    }
-
-    public void TakeDamage(int damage, Vector2 knockbackDirection)
-    {
-        currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
-
-        StartCoroutine(FlashRed());
-
-        // Zorg dat knockback alleen Player beïnvloedt
-        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    IEnumerator FlashRed()
-    {
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(flashDuration);
-        spriteRenderer.color = Color.white;
-    }
     public void GainExperience(int amount)
     {
         currentXP += amount;
-
-        // 3. Update de visuele balk
         if (xpBar != null) xpBar.SetXP(currentXP);
 
         if (currentXP >= nextLevelXP)
@@ -76,24 +47,35 @@ public class Player : MonoBehaviour
 
     void LevelUp()
     {
-        // Bereken hoeveel XP we 'over' hebben voor het volgende level
-        int leftoverXP = currentXP - nextLevelXP;
-
-        currentXP = (leftoverXP > 0) ? leftoverXP : 0;
+        currentXP = 0;
         nextLevelXP = Mathf.RoundToInt(nextLevelXP * 1.5f);
 
         if (xpBar != null)
         {
             xpBar.SetMaxXP(nextLevelXP);
-            xpBar.SetXP(currentXP); // Zet hem op de overgebleven XP ipv 0
+            xpBar.SetXP(0);
         }
 
-        Debug.Log("LEVEL UP! Nieuw doel: " + nextLevelXP);
+        // Dit opent het menu via de manager
+        if (upgradeManager != null)
+        {
+            upgradeManager.OpenMenu();
+        }
     }
 
-    void Die()
+    public void TakeDamage(int damage, Vector2 knockbackDirection)
     {
-        Debug.Log("Player has died.");
-        // Hier kan je animatie of respawn logica toevoegen
+        currentHealth -= damage;
+        if (healthBar != null) healthBar.SetHealth(currentHealth);
+        StartCoroutine(FlashRed());
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+        if (currentHealth <= 0) Debug.Log("Player Dead");
+    }
+
+    IEnumerator FlashRed()
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(flashDuration);
+        spriteRenderer.color = Color.white;
     }
 }
