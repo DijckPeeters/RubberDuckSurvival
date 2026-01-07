@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     public int nextLevelXP = 100;
     public UpgradeManager upgradeManager;
 
+    [Header("Score System")]
+    public ScoreManager scoreManager; // Sleep je ScoreManager hierin!
+
     [Header("Components")]
     public HealthBar healthBar;
     public SpriteRenderer spriteRenderer;
@@ -39,6 +42,9 @@ public class Player : MonoBehaviour
         currentXP += amount;
         if (xpBar != null) xpBar.SetXP(currentXP);
 
+        // Geef ook punten voor de score!
+        if (scoreManager != null) scoreManager.AddScore(amount);
+
         if (currentXP >= nextLevelXP)
         {
             LevelUp();
@@ -56,11 +62,7 @@ public class Player : MonoBehaviour
             xpBar.SetXP(0);
         }
 
-        // Dit opent het menu via de manager
-        if (upgradeManager != null)
-        {
-            upgradeManager.OpenMenu();
-        }
+        if (upgradeManager != null) upgradeManager.OpenMenu();
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection)
@@ -69,7 +71,11 @@ public class Player : MonoBehaviour
         if (healthBar != null) healthBar.SetHealth(currentHealth);
         StartCoroutine(FlashRed());
         rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
-        if (currentHealth <= 0) Debug.Log("Player Dead");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
     IEnumerator FlashRed()
@@ -77,5 +83,14 @@ public class Player : MonoBehaviour
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(flashDuration);
         spriteRenderer.color = Color.white;
+    }
+
+    void Die()
+    {
+        Debug.Log("Player Dead");
+        if (scoreManager != null)
+        {
+            scoreManager.HandleGameOver();
+        }
     }
 }
