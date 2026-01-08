@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5794056}
   - component: {fileID: 5794057}
+  - component: {fileID: 5794058}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -162,11 +163,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f9910fd1361bfb44789e80a08c8fb2f5, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.248
+  m_Volume: 0.104
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -248,6 +249,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5794058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5794055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a08acc330bc7d64aadc238cce4d3f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  audioSource: {fileID: 5794057}
+  playlist:
+  - {fileID: 8300000, guid: f9910fd1361bfb44789e80a08c8fb2f5, type: 3}
+  - {fileID: 8300000, guid: 99dadd84272f77142b9af8ef0362f2af, type: 3}
+  - {fileID: 8300000, guid: 5f2c9c8ca0c8b82488c31929541e5200, type: 3}
+  - {fileID: 8300000, guid: ace6841c2118e4446b24f9d56e3d92ab, type: 3}
 --- !u!1 &9450653
 GameObject:
   m_ObjectHideFlags: 0
@@ -2421,7 +2440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
   levelUpMenu: {fileID: 969733616}
   player: {fileID: 2079154742}
-  weaponObject: {fileID: 0}
+  weaponObject: {fileID: 2079154734}
 --- !u!4 &1088230438
 Transform:
   m_ObjectHideFlags: 0
@@ -3907,7 +3926,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.27880955, y: -2.3730302, z: 0}
-  m_LocalScale: {x: 5000, y: 5000, z: 1}
+  m_LocalScale: {x: 10000, y: 10000, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 381024452}
