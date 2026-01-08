@@ -58,6 +58,16 @@ public class Enemy : MonoBehaviour
         {
             Vector2 direction = ((Vector2)target.position - rb.position).normalized;
             rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
+
+            // Draai de sprite op basis van de richting
+            if (direction.x > 0)
+            {
+                spriteRenderer.flipX = false; // Kijkt naar rechts
+            }
+            else if (direction.x < 0)
+            {
+                spriteRenderer.flipX = true; // Kijkt naar links
+            }
         }
     }
 

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3723789495061088154}
   - component: {fileID: 3522430199330423404}
   - component: {fileID: 6248188768794903951}
+  - component: {fileID: 5814682128040259662}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -176,3 +177,25 @@ CapsuleCollider2D:
   m_Offset: {x: 0.007716126, y: -0.03376643}
   m_Size: {x: 0.25892162, y: 0.31093588}
   m_Direction: 0
+--- !u!95 &5814682128040259662
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168613685797463545}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2dc25260061a9b6448c89837a8ea45b2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
