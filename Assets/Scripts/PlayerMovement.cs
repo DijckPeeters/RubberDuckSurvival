@@ -18,14 +18,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Telt de knockback tijd af zodat de speler na een klap weer controle krijgt over de beweging.
         if (knockbackTimer > 0) knockbackTimer -= Time.deltaTime;
 
-        // Update animator parameters
+        // Stuurt de bewegingswaarden naar de Animator om te wisselen tussen Idle en Walking.
         animator.SetFloat("InputX", moveInput.x);
         animator.SetFloat("InputY", moveInput.y);
         animator.SetBool("isWalking", moveInput.sqrMagnitude > 0);
 
-        // Update last direction voor idle animations
+        // Onthoudt de laatste looprichting zodat de speler in de juiste richting blijft kijken bij stilstand.
         if (moveInput.sqrMagnitude > 0)
         {
             lastMoveInput = moveInput;
@@ -36,16 +37,18 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Past de fysieke snelheid alleen aan als de speler niet wordt weggeslagen door een vijand.
         if (knockbackTimer <= 0)
         {
-            // Gebruik velocity in plaats van linearVelocity als je een oudere Unity versie hebt, 
-            // of blijf bij linearVelocity in Unity 6, maar zorg dat we de waarde direct zetten:
+            // Gebruikt linearVelocity (Unity 6) om een constante snelheid te garanderen zonder vertraging.
             rb.linearVelocity = moveInput * moveSpeed;
         }
     }
 
+    // Blokkeert tijdelijk de speler-input om de fysieke impact van een vijand te verwerken.
     public void ApplyKnockback() => knockbackTimer = 0.25f;
 
+    // Wordt aangeroepen door het InputSystem wanneer de joystick of WASD-toetsen worden gebruikt.
     public void Move(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InfiniteBackground : MonoBehaviour
 {
+    // De scrollSpeed bepaalt de gevoeligheid van de achtergrondbeweging. 
+    // Een lage waarde zorgt ervoor dat het gras niet te snel onder de voeten wegglijdt.
     public float scrollSpeed = 0.00000000001f;
     private MeshRenderer meshRenderer;
     private Transform playerTransform;
@@ -9,7 +11,8 @@ public class InfiniteBackground : MonoBehaviour
     void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        // Zoek je speler op basis van de tag die je al gebruikt
+
+        // Dynamische koppeling aan de speler zodat de achtergrond altijd meebeweegt.
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
     }
@@ -18,11 +21,16 @@ public class InfiniteBackground : MonoBehaviour
     {
         if (playerTransform != null)
         {
-            // Verplaats de Quad mee met de speler zodat hij altijd onder de speler blijft
+            // De Quad wordt exact op de positie van de speler geplaatst (met een offset op de Z-as).
+            // Hierdoor verlaat de speler visueel nooit het midden van het grasveld.
             transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, 10f);
 
-            // Verschuif de texture in de tegenovergestelde richting van de beweging
+            // In plaats van het object te bewegen, verschuiven we de Texture op het materiaal (UV-offset).
+            // Door de speler-positie te vermenigvuldigen met scrollSpeed, creëren we de illusie 
+            // van beweging in de tegenovergestelde richting.
             Vector2 offset = new Vector2(playerTransform.position.x * scrollSpeed, playerTransform.position.y * scrollSpeed);
+
+            // mainTextureOffset werkt alleen correct als de Texture Wrap Mode op 'Repeat' staat.
             meshRenderer.material.mainTextureOffset = offset;
         }
     }

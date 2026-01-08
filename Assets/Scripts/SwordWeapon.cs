@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections.Generic; // Nodig voor de lijst
+using System.Collections.Generic; // Gebruikt voor de List om data van geraakte vijanden bij te houden.
 
 public class SwordWeapon : MonoBehaviour
 {
@@ -17,7 +17,7 @@ public class SwordWeapon : MonoBehaviour
     private bool strikeRight = true;
     private bool isHitboxActive = false;
     private float activeTimer;
-    private List<Enemy> enemiesHitThisAttack = new List<Enemy>();
+    private List<Enemy> enemiesHitThisAttack = new List<Enemy>(); // Voorkomt dat één zwaai een vijand meerdere keren raakt.
 
     void Update()
     {
@@ -28,7 +28,7 @@ public class SwordWeapon : MonoBehaviour
             timer = 0;
         }
 
-        // Blijf checken zolang de hitbox aan staat
+        // Houdt de hitbox een specifiek aantal seconden open om de animatie visueel te volgen.
         if (isHitboxActive)
         {
             CheckHitContinuous();
@@ -43,34 +43,36 @@ public class SwordWeapon : MonoBehaviour
 
     void Attack()
     {
-        enemiesHitThisAttack.Clear(); // Reset de lijst voor de nieuwe klap
+        enemiesHitThisAttack.Clear(); // Maakt de lijst leeg voor elke nieuwe aanval.
         GameObject currentAttack = strikeRight ? rightAttackObject : leftAttackObject;
 
         currentAttack.SetActive(true);
         Animator anim = currentAttack.GetComponent<Animator>();
+        // Reset de animatie naar frame 0 om vertraging in de visualisatie te voorkomen.
         if (anim != null) anim.Play("Slash_Anim", -1, 0f);
 
         isHitboxActive = true;
         activeTimer = hitboxDuration;
-        strikeRight = !strikeRight;
+        strikeRight = !strikeRight; // Wisselt de aanvalsrichting af (links/rechts).
     }
 
     void CheckHitContinuous()
     {
-        // Bepaal welke kant we nu checken
+        // Bepaalt de positie van de onzichtbare 'hit-box' op basis van de huidige aanvalsrichting.
         Vector3 pos = !strikeRight ? rightAttackObject.transform.position : leftAttackObject.transform.position;
 
+        // Physics2D.OverlapBoxAll scant een gebied en geeft alle colliders binnen die box terug.
         Collider2D[] hits = Physics2D.OverlapBoxAll(pos, hitboxSize, 0);
         foreach (Collider2D hit in hits)
         {
             Enemy enemyScript = hit.GetComponent<Enemy>();
             if (enemyScript == null) enemyScript = hit.GetComponentInParent<Enemy>();
 
-            // Alleen hitten als het een Enemy is EN we hem deze klap nog niet geraakt hebben
+            // Controleert of het object een vijand is en of deze niet al geraakt is tijdens deze specifieke zwaai.
             if (enemyScript != null && !enemiesHitThisAttack.Contains(enemyScript))
             {
                 enemyScript.TakeDamage(damage);
-                enemiesHitThisAttack.Add(enemyScript); // Voeg toe aan lijst zodat hij niet dubbel geraakt wordt
+                enemiesHitThisAttack.Add(enemyScript); // Registreert de vijand in de lijst van geraakte doelen.
             }
         }
     }
@@ -81,6 +83,7 @@ public class SwordWeapon : MonoBehaviour
         leftAttackObject.SetActive(false);
     }
 
+    // Tekent visuele hulplijnen in de Unity Editor (Scene view) om de grootte van de hitbox te debuggen.
     private void OnDrawGizmos()
     {
         Gizmos.color = isHitboxActive ? Color.green : Color.red;
