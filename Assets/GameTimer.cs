@@ -18,7 +18,7 @@ public class GameTimer : MonoBehaviour
         string seconds = (t % 60).ToString("00");
         timerText.text = minutes + ":" + seconds;
     }
-
+    
     public float GetTime()
     {
         return Time.time - startTime;
