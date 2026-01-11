@@ -488,12 +488,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1088230437}
         m_TargetAssemblyTypeName: UpgradeManager, Assembly-CSharp
-        m_MethodName: UpgradeDamage
-        m_Mode: 1
+        m_MethodName: SelectUpgrade
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -801,8 +801,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1088230437}
         m_TargetAssemblyTypeName: UpgradeManager, Assembly-CSharp
-        m_MethodName: UpgradeHealth
-        m_Mode: 1
+        m_MethodName: SelectUpgrade
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1031,7 +1031,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Size UP
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1702,12 +1702,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1088230437}
         m_TargetAssemblyTypeName: UpgradeManager, Assembly-CSharp
-        m_MethodName: UpgradeSize
-        m_Mode: 1
+        m_MethodName: SelectUpgrade
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2441,6 +2441,11 @@ MonoBehaviour:
   levelUpMenu: {fileID: 969733616}
   player: {fileID: 2079154742}
   weaponObject: {fileID: 2079154734}
+  swordWeapon: {fileID: 2079154745}
+  buttonTexts:
+  - {fileID: 1378887670}
+  - {fileID: 2064829529}
+  - {fileID: 226199514}
 --- !u!4 &1088230438
 Transform:
   m_ObjectHideFlags: 0
@@ -2664,6 +2669,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105251675}
   m_CullTransparentMesh: 1
+--- !u!1 &1154699838
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1154699839}
+  m_Layer: 7
+  m_Name: SwordWeapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1154699839
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154699838}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1539681187}
+  - {fileID: 1638243208}
+  m_Father: {fileID: 2079154738}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1160845995
 GameObject:
   m_ObjectHideFlags: 0
@@ -3058,7 +3096,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Health UP
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3292,12 +3330,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539681186}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1, y: 0, z: 0}
   m_LocalScale: {x: 2.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2079154738}
+  m_Father: {fileID: 1154699839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1539681188
 Animator:
@@ -3405,12 +3443,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1638243207}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 2.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2079154738}
+  m_Father: {fileID: 1154699839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1638243209
 Animator:
@@ -4124,7 +4162,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Damage UP
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4328,8 +4366,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1539681187}
-  - {fileID: 1638243208}
+  - {fileID: 1154699839}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2079154739
