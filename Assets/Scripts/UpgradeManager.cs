@@ -32,6 +32,7 @@ public class UpgradeManager : MonoBehaviour
             return;
         }
 
+        // Maak een kopie van de lijst om unieke keuzes te maken per knop
         List<string> currentOptions = new List<string>(upgradeOptions);
 
         for (int i = 0; i < buttonTexts.Length; i++)
@@ -42,7 +43,7 @@ public class UpgradeManager : MonoBehaviour
             string chosenUpgrade = currentOptions[randomIndex];
 
             buttonTexts[i].text = chosenUpgrade;
-            currentOptions.RemoveAt(randomIndex); // Zorgt voor 3 unieke keuzes
+            currentOptions.RemoveAt(randomIndex);
         }
     }
 
@@ -62,8 +63,8 @@ public class UpgradeManager : MonoBehaviour
         else if (upgradeType == "Size") UpgradeSize();
         else if (upgradeType == "Speed") UpgradeSpeed();
         else if (upgradeType == "Attack Speed") UpgradeAttackSpeed();
-        //else if (upgradeType == "Bomb") UnlockBomb();
-        //else if (upgradeType == "Bigger Bombs") UpgradeBombSize();
+        else if (upgradeType == "Bomb") UnlockBomb();
+        else if (upgradeType == "Bigger Bombs") UpgradeBombSize();
 
         CloseMenu();
     }
@@ -79,41 +80,52 @@ public class UpgradeManager : MonoBehaviour
 
     void UpgradeSize()
     {
-        if (weaponObject != null) weaponObject.transform.localScale *= 1.2f;
+        // Maakt de hitbox van je zwaard groter
+        if (swordWeapon != null) swordWeapon.hitboxSize *= 1.2f;
     }
 
     void UpgradeSpeed()
     {
-        player.GetComponent<PlayerMovement>().moveSpeed += 1f;
+        player.GetComponent<PlayerMovement>().moveSpeed += 1.5f;
     }
 
     void UpgradeAttackSpeed()
     {
-        if (swordWeapon != null) swordWeapon.attackSpeed *= 0.85f;
+        // Aangezien we met knoppen werken, maken we de animatie sneller
+        Animator anim = player.GetComponent<Animator>();
+        if (anim != null)
+        {
+            float currentSpeed = anim.GetFloat("AttackSpeedMultiplier");
+            if (currentSpeed == 0) currentSpeed = 1f; // Fallback
+            anim.SetFloat("AttackSpeedMultiplier", currentSpeed * 1.2f);
+        }
     }
 
-    //void UnlockBomb()
-    //{
-    //    BombSpawner spawner = player.GetComponent<BombSpawner>();
-    //    if (spawner != null)
-    //    {
-    //        spawner.enabled = true;
-    //        Debug.Log("BOMMEN GEACTIVEERD!"); // Zie je dit in de Console?
-    //        upgradeOptions.Remove("Bomb");
-    //        upgradeOptions.Add("Bigger Bombs");
-    //    }
-    //}
+    void UnlockBomb()
+    {
+        BombWeapon bombWeapon = player.GetComponent<BombWeapon>();
+        if (bombWeapon != null)
+        {
+            bombWeapon.isUnlocked = true;
+            Debug.Log("BOMMEN GEACTIVEERD!");
 
-    //void UpgradeBombSize()
-    //{
-    //    BombSpawner spawner = player.GetComponent<BombSpawner>();
-    //    if (spawner != null)
-    //    {
-    //        // Verhoogt de radius en de visuele schaal op de spawner
-    //        spawner.explosionRadius *= 1.4f;
-    //        spawner.visualScale *= 1.4f;
-    //    }
-    //}
+            // Vervang 'Bomb' door 'Bigger Bombs' in de lijst voor de volgende level up
+            upgradeOptions.Remove("Bomb");
+            upgradeOptions.Add("Bigger Bombs");
+        }
+    }
+
+    void UpgradeBombSize()
+    {
+        BombWeapon bombWeapon = player.GetComponent<BombWeapon>();
+        if (bombWeapon != null)
+        {
+            // We vergroten zowel de logische radius als de visuele schaal
+            bombWeapon.explosionRadius *= 1.4f;
+            bombWeapon.visualExplosionScale *= 1.4f; // Dit matcht nu met het script hierboven
+            Debug.Log("BOM RADIUS EN VISUALS VERGROOT!");
+        }
+    }
 
     public void CloseMenu()
     {

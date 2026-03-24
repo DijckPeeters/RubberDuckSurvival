@@ -1,50 +1,42 @@
-using System.Collections;
 using UnityEngine;
 
 public class BombWeapon : MonoBehaviour
 {
-    public float damage = 50f;
-    public float explosionRadius = 4f;
-    public float visualExplosionScale = 2f;
-    public float fuseTime = 2f;
+    public GameObject bombPrefab;
+    public float dropInterval = 5f;
+    private float timer;
+    public bool isUnlocked = false;
 
-    void Start()
+    [Header("Upgradeble Stats")]
+    public float explosionRadius = 3f;
+    public float bombDamage = 50f;
+    public float visualExplosionScale = 1f; // NIEUW: Dit lost je error op!
+
+    void Update()
     {
-        // De bom begint als klein object en wacht fuseTime
-        Invoke("StartExplosion", fuseTime);
+        if (!isUnlocked) return;
+
+        timer += Time.deltaTime;
+        if (timer >= dropInterval)
+        {
+            DropBomb();
+            timer = 0;
+        }
     }
 
-    void StartExplosion()
+    void DropBomb()
     {
-        Animator anim = GetComponent<Animator>();
-        if (anim != null)
-        {
-            // Maak de bom visueel groter voor de explosie-animatie
-            transform.localScale = new Vector3(visualExplosionScale, visualExplosionScale, 1f);
-            anim.SetTrigger("ExplodeNow");
-        }
-        StartCoroutine(DealDamageOverTime());
-    }
+        GameObject newBomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
 
-    IEnumerator DealDamageOverTime()
-    {
-        float duration = 0.5f; // De hitbox blijft een halve seconde actief
-        float timer = 0f;
-
-        while (timer < duration)
+        // Geef alle stats door aan de bom
+        Bomb bombScript = newBomb.GetComponent<Bomb>();
+        if (bombScript != null)
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-            foreach (Collider2D enemy in hitEnemies)
-            {
-                // Vervang 'Enemy' door de naam van jouw vijand-script
-                if (enemy.GetComponent<Enemy>() != null)
-                {
-                    enemy.GetComponent<Enemy>().TakeDamage(damage * Time.deltaTime * 5);
-                }
-            }
-            timer += Time.deltaTime;
-            yield return null;
+            bombScript.explosionRadius = explosionRadius;
+            bombScript.damage = bombDamage;
+
+            // Pas de visuele grootte van de bom/explosie aan
+            newBomb.transform.localScale = Vector3.one * visualExplosionScale;
         }
-        Destroy(gameObject);
     }
 }
