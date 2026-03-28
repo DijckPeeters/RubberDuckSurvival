@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     public UpgradeManager upgradeManager;
 
     [Header("Score System")]
-    public ScoreManager scoreManager; // Koppeling naar het UI-systeem voor de scorepunten.
+    public ScoreManager scoreManager;
 
     [Header("Components")]
     public HealthBar healthBar;
@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>(); // Haalt de physics-component op voor de knockback-krachten.
+        rb = GetComponent<Rigidbody2D>();
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -33,17 +33,24 @@ public class Player : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        // Zet de UI-balkjes direct op de juiste beginwaarden.
         if (healthBar != null) healthBar.SetMaxHealth(maxHealth);
         if (xpBar != null) xpBar.SetMaxXP(nextLevelXP);
+    }
+
+    // --- NIEUW: Update functie voor de TEST-toets ---
+    void Update()
+    {
+        // Druk op L in de game om direct het upgrade menu te testen!
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LevelUp();
+        }
     }
 
     public void GainExperience(int amount)
     {
         currentXP += amount;
         if (xpBar != null) xpBar.SetXP(currentXP);
-
-        // Synchroniseert de verdiende XP direct met de globale score.
         if (scoreManager != null) scoreManager.AddScore(amount);
 
         if (currentXP >= nextLevelXP)
@@ -55,7 +62,6 @@ public class Player : MonoBehaviour
     void LevelUp()
     {
         currentXP = 0;
-        // Verhoogt de XP-eis voor het volgende level met 50% voor een progressieve moeilijkheid.
         nextLevelXP = Mathf.RoundToInt(nextLevelXP * 1.5f);
 
         if (xpBar != null)
@@ -64,17 +70,21 @@ public class Player : MonoBehaviour
             xpBar.SetXP(0);
         }
 
-        // Pauzeert de game-loop en opent het keuzemenu voor upgrades.
-        if (upgradeManager != null) upgradeManager.OpenMenu();
+        if (upgradeManager != null)
+        {
+            upgradeManager.OpenMenu();
+        }
+        else
+        {
+            Debug.LogWarning("UpgradeManager mist op de Player!");
+        }
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection)
     {
         currentHealth -= damage;
         if (healthBar != null) healthBar.SetHealth(currentHealth);
-        StartCoroutine(FlashRed()); // Start de visuele feedback in een aparte tijdlijn.
-
-        // Past een korte, krachtige fysieke impuls toe in de richting weg van de vijand.
+        StartCoroutine(FlashRed());
         rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
 
         if (currentHealth <= 0)
@@ -83,11 +93,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Tijdelijke kleurverandering om de speler te waarschuwen dat hij geraakt is.
     IEnumerator FlashRed()
     {
         spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(flashDuration); // Wacht het aantal seconden voor het terugzetten.
+        yield return new WaitForSeconds(flashDuration);
         spriteRenderer.color = Color.white;
     }
 
@@ -96,7 +105,7 @@ public class Player : MonoBehaviour
         Debug.Log("Player Dead");
         if (scoreManager != null)
         {
-            scoreManager.HandleGameOver(); // Activeert het game-over scherm en stopt de timer.
+            scoreManager.HandleGameOver();
         }
     }
 }

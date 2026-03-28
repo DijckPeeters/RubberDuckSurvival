@@ -1,6 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -20,8 +21,27 @@ public class UpgradeManager : MonoBehaviour
         if (levelUpMenu == null) return;
 
         levelUpMenu.SetActive(true);
-        Time.timeScale = 0f; // Pauzeert de game
+        Time.timeScale = 0f;
         PrepareRandomButtons();
+
+        // ARCADE FIX: Reset de huidige selectie en kies de eerste knop
+        // Zorg dat 'Option1' (of hoe je knop heet) een Button component heeft.
+        EventSystem.current.SetSelectedGameObject(null);
+
+        // We zoeken de eerste actieve knop in het menu om te selecteren
+        GameObject firstButton = levelUpMenu.GetComponentInChildren<UnityEngine.UI.Button>().gameObject;
+        if (firstButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(firstButton);
+        }
+    }
+    void Update()
+    {
+        // Druk op de L-toets om direct te levelen/testen
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            OpenMenu(); // Of hoe je methode ook heet in de UpgradeManager
+        }
     }
 
     void PrepareRandomButtons()

@@ -2440,7 +2440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
   levelUpMenu: {fileID: 969733616}
   player: {fileID: 2079154742}
-  weaponObject: {fileID: 2079154734}
+  weaponObject: {fileID: 1171872457}
   swordWeapon: {fileID: 2079154745}
   buttonTexts:
   - {fileID: 1378887670}
@@ -4163,6 +4163,7 @@ GameObject:
   - component: {fileID: 2079154744}
   - component: {fileID: 2079154743}
   - component: {fileID: 2079154745}
+  - component: {fileID: 2079154746}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -4535,6 +4536,24 @@ MonoBehaviour:
   hitboxDuration: 0.5
   hitboxSize: {x: 4, y: 1.5}
   hitboxOffsetX: 0.5
+--- !u!114 &2079154746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079154734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a581aedca94db424491bfa04e03bc616, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BombWeapon
+  bombPrefab: {fileID: 6890023482104378683, guid: fb0432cb470d01e40b790d1db2631575, type: 3}
+  dropInterval: 5
+  isUnlocked: 0
+  explosionRadius: 3
+  bombDamage: 50
+  visualExplosionScale: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

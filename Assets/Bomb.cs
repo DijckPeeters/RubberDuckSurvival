@@ -3,39 +3,58 @@ using UnityEngine;
 public class Bomb : MonoBehaviour
 {
     public float fuseTime = 2f;
-    public float explosionRadius = 3f; // Moet public zijn
-    public float damage = 50f;         // Moet public zijn
-    public GameObject explosionEffect; // Sleep hier een effect in (optioneel)
+    public float explosionRadius = 3f;
+    public float damage = 50f;
+    public GameObject explosionEffect;
 
-    void Start()
+    private bool hasExploded = false; // Zorgt dat de bom maar 1x afgaat
+
+    void Update()
     {
-        // Start de timer voor de explosie
-        Invoke("Explode", fuseTime);
+        // Tel de tijd af
+        fuseTime -= Time.deltaTime;
+
+        // Als de tijd op is EN hij is nog niet ontploft...
+        if (fuseTime <= 0 && !hasExploded)
+        {
+            Explode();
+        }
     }
 
     void Explode()
     {
-        // 1. Visueel effect (optioneel)
-        if (explosionEffect != null) Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        if (hasExploded) return; // Beveiliging: maar 1x knallen
+        hasExploded = true;
 
-        // 2. Vind alle vijanden in de buurt
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-
-        foreach (Collider2D enemy in hitEnemies)
+        // --- VISUELE EXPLOSIE FIX ---
+        // Laat de visuele explosie zien (vlammen)
+        if (explosionEffect != null)
         {
-            // Check of het een enemy is (pas de "Enemy" component naam aan naar jouw script)
-            Enemy health = enemy.GetComponent<Enemy>();
-            if (health != null)
+            // 1. We spawnen de explosie en slaan hem even op in 'exp'
+            GameObject exp = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+
+            // 2. We dwingen de explosie om PRECIES DEZELFDE grootte te worden als de bom!
+            // transform.localScale is de huidige grootte van de bom (Idle).
+            exp.transform.localScale = transform.localScale;
+        }
+
+        // --- SCHADE LOGICA ---
+        // Zoek alles in de buurt
+        Collider2D[] objectsInRange = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        foreach (Collider2D col in objectsInRange)
+        {
+            if (col.CompareTag("Enemy"))
             {
-                health.TakeDamage(damage);
+                // Roep de schade functie van je vijand aan
+                col.GetComponent<Enemy>()?.TakeDamage(damage);
             }
         }
 
-        // 3. Verwijder de bom
-        Destroy(gameObject);
+        // --- OPRUIMEN ---
+        Destroy(gameObject); // Verwijder de bom zelf
     }
 
-    // Laat de radius zien in de Editor (handig voor afstellen!)
+    // Teken een rode cirkel in de Scene-view zodat je de grootte kunt zien
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

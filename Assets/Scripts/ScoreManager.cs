@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -34,13 +35,12 @@ public class ScoreManager : MonoBehaviour
     {
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
 
-        // PlayerPrefs wordt gebruikt om de High Score permanent op te slaan op de harde schijf.
         int highScore = PlayerPrefs.GetInt("HighScore", 0);
 
         if (score > highScore)
         {
             PlayerPrefs.SetInt("HighScore", score);
-            PlayerPrefs.Save(); // Forceert het wegschrijven van de nieuwe topscore.
+            PlayerPrefs.Save();
         }
 
         if (highScoreText != null)
@@ -48,8 +48,17 @@ public class ScoreManager : MonoBehaviour
 
         ShowLeaderboard();
 
-        // Zet de simulatiesnelheid op 0 om alle bewegingen en physics in de game te bevriezen.
         Time.timeScale = 0f;
+
+        // ARCADE FIX: Selecteer de herstart-knop voor de joystick
+        EventSystem.current.SetSelectedGameObject(null);
+
+        // Zoek de herstartknop in het gameOverPanel
+        GameObject restartBtn = gameOverPanel.GetComponentInChildren<UnityEngine.UI.Button>().gameObject;
+        if (restartBtn != null)
+        {
+            EventSystem.current.SetSelectedGameObject(restartBtn);
+        }
     }
 
     void ShowLeaderboard()
